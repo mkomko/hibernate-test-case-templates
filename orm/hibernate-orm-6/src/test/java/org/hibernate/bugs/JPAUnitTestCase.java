@@ -28,10 +28,32 @@ public class JPAUnitTestCase {
 	// Entities are auto-discovered, so just add them anywhere on class-path
 	// Add your tests, using standard JUnit.
 	@Test
-	public void hhh123Test() throws Exception {
+	public void hhh17668Test() throws Exception {
 		EntityManager entityManager = entityManagerFactory.createEntityManager();
 		entityManager.getTransaction().begin();
-		// Do stuff...
+
+		Phase phase = new Phase();
+		PhaseDescription description = new PhaseDescription();
+		phase.setDescription(description);
+		entityManager.persist(phase);
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		phase = entityManager.find(Phase.class, 1L);
+
+		entityManager.getTransaction().commit();
+		entityManager.close();
+
+		entityManager = entityManagerFactory.createEntityManager();
+		entityManager.getTransaction().begin();
+
+		phase = entityManager.merge(phase);
+		entityManager.refresh(phase); // throws NullPointerException
+
 		entityManager.getTransaction().commit();
 		entityManager.close();
 	}
